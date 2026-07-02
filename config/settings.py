@@ -28,6 +28,10 @@ SECRET_KEY = _env(
 )
 ALLOWED_HOSTS = [host.strip() for host in _env('DJANGO_ALLOWED_HOSTS', '127.0.0.1,localhost,*').split(',') if host.strip()]
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://sebastian-proyect.onrender.com',
+]
+
 INSTALLED_APPS = [
     'app',
     'usuarios', 
