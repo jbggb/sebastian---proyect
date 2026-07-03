@@ -248,8 +248,10 @@ document.addEventListener('click', function(e) {
           </div>
           <div class="mb-3">
             <label class="form-label">Email <span style="color:var(--c-danger);">*</span></label>
-            <input type="email" name="email" class="form-control"
-              placeholder="proveedor@empresa.com" required>
+            <input type="email" name="email" class="form-control" id="crear_email"
+              placeholder="proveedor@empresa.com" required
+              oninput="validarEmailProveedor(this)">
+            <div id="crear_email_error" class="form-text" style="color:var(--c-danger);display:none;"></div>
           </div>
           <div class="mb-3">
             <label class="form-label">Observaciones</label>
@@ -259,7 +261,7 @@ document.addEventListener('click', function(e) {
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
+          <button type="submit" class="btn btn-primary" id="crear_prov_btn_guardar"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
         </div>
       </form>
     </div>
@@ -290,7 +292,9 @@ document.addEventListener('click', function(e) {
           </div>
           <div class="mb-3">
             <label class="form-label">Email <span style="color:var(--c-danger);">*</span></label>
-            <input id="edit_email" type="email" name="email" class="form-control" required>
+            <input id="edit_email" type="email" name="email" class="form-control" required
+              oninput="validarEmailProveedor(this)">
+            <div id="edit_email_error" class="form-text" style="color:var(--c-danger);display:none;"></div>
           </div>
           <div class="mb-3">
             <label class="form-label">Observaciones</label>
@@ -299,7 +303,7 @@ document.addEventListener('click', function(e) {
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-warning"><i class="fa-solid fa-floppy-disk"></i> Guardar cambios</button>
+          <button type="submit" class="btn btn-warning" id="edit_prov_btn_guardar"><i class="fa-solid fa-floppy-disk"></i> Guardar cambios</button>
         </div>
       </form>
     </div>
@@ -365,6 +369,32 @@ function validarTelefonoProveedor(input) {
       el.style.display = 'none';
     }
   }
+}
+
+var RE_EMAIL_PROV = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+function validarEmailProveedor(input) {
+  var errorId  = input.id === 'crear_email' ? 'crear_email_error' : 'edit_email_error';
+  var btnId    = input.id === 'crear_email' ? 'crear_prov_btn_guardar' : 'edit_prov_btn_guardar';
+  var el       = document.getElementById(errorId);
+  var btn      = document.getElementById(btnId);
+  var val      = input.value.trim();
+  var esValido = val.length === 0 || RE_EMAIL_PROV.test(val);
+
+  if (!el) return;
+
+  if (val.length > 0 && !esValido) {
+    el.textContent = 'Ingresa un correo válido (ej: nombre@dominio.com).';
+    el.style.display = 'block';
+    input.classList.add('is-invalid');
+    input.style.borderColor = 'var(--c-danger)';
+  } else {
+    el.style.display = 'none';
+    input.classList.remove('is-invalid');
+    input.style.borderColor = '';
+  }
+
+  if (btn) btn.disabled = val.length > 0 && !esValido;
 }
 
 var verProveedorId = null;
